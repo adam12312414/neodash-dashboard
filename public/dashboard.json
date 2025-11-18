@@ -1,0 +1,271 @@
+{
+  "title": "New dashboard",
+  "version": "2.4",
+  "settings": {
+    "pagenumber": 0,
+    "editable": true,
+    "fullscreenEnabled": false,
+    "parameters": {
+      "neodash_cuisine_name": "chinese",
+      "neodash_cuisine_name_display": "chinese"
+    },
+    "theme": "dark"
+  },
+  "pages": [
+    {
+      "title": "New page",
+      "reports": [
+        {
+          "id": "9efd8339-1c73-4e86-9a31-45c7517ee4b1",
+          "title": "",
+          "query": "  # 🍜 Map of Flavors (Carte des Saveurs)\n### Connecting the World Through Ingredients 🌎\n\n\n\n\n\n\n\n\n",
+          "width": 20,
+          "height": 2,
+          "x": 0,
+          "y": 0,
+          "type": "text",
+          "selection": {},
+          "settings": {},
+          "schema": []
+        },
+        {
+          "id": "7f379400-5f86-4996-974f-36710917d9c4",
+          "title": "Ingredient–Brand Network for Selected Cuisine",
+          "query": "MATCH (c:Cuisine)\nWHERE toLower(c.name) = toLower($neodash_cuisine_name)\n\n// get all ingredients for that cuisine\nOPTIONAL MATCH (c)-[r1:USES]->(i:Ingredient)\nWITH c, r1, i\nWHERE i IS NOT NULL\n\n// randomly sample ingredients\nWITH c, r1, i\nORDER BY rand()\nLIMIT 30\n\n// connect brands for all sampled ingredients\nOPTIONAL MATCH (i)-[r2:ASSOCIATED_WITH]->(b:Brand)\nRETURN c, r1, i, r2, b;\n\n\n\n\n\n\n",
+          "width": 7,
+          "height": 4,
+          "x": 0,
+          "y": 12,
+          "type": "graph",
+          "selection": {
+            "Cuisine": "name",
+            "USES": "(label)",
+            "Ingredient": "name"
+          },
+          "settings": {
+            "relationshipParticles": false,
+            "relLabelColor": "#ffffff",
+            "defaultRelColor": "#ffffff",
+            "arrowLengthProp": 1.5,
+            "defaultRelWidth": 1.5,
+            "defaultNodeSize": 3,
+            "nodeLabelFontSize": 2
+          },
+          "schema": [
+            [
+              "Cuisine",
+              "name"
+            ],
+            [
+              "USES"
+            ],
+            [
+              "Ingredient",
+              "name"
+            ]
+          ]
+        },
+        {
+          "id": "6da58dd5-4db9-4098-a20b-e1587d9eddce",
+          "title": "Most Frequently Used Ingredients Across All Cuisines",
+          "query": "MATCH (c:Cuisine)-[:HAS_DISH]->(:Dish)-[:USES]->(i:Ingredient)\nRETURN i.name AS Ingredient, COUNT(*) AS TotalOccurrences\nORDER BY TotalOccurrences DESC\nLIMIT 10;\n\n\n\n",
+          "width": 7,
+          "height": 4,
+          "x": 0,
+          "y": 4,
+          "type": "bar",
+          "selection": {
+            "index": "Ingredient",
+            "value": "TotalOccurrences",
+            "key": "(none)"
+          },
+          "settings": {},
+          "schema": []
+        },
+        {
+          "id": "7e5c3bde-872c-4ed8-9bd1-28b0379a1e27",
+          "title": "Distribution of Dishes Across Regions",
+          "query": "MATCH (r:Region)-[:HAS_CUISINE]->(c:Cuisine)-[:HAS_DISH]->(d:Dish)\nRETURN r.name AS Region, COUNT(DISTINCT d) AS TotalDishes\nORDER BY TotalDishes DESC;\n",
+          "width": 7,
+          "height": 4,
+          "x": 0,
+          "y": 8,
+          "type": "bar",
+          "selection": {
+            "index": "Region",
+            "value": "TotalDishes",
+            "key": "(none)"
+          },
+          "settings": {
+            "barValues": false
+          },
+          "schema": []
+        },
+        {
+          "id": "55ab85d3-b6e1-4c4f-a057-cdcbbda9f977",
+          "title": "Total Unique Ingredients by Cuisine",
+          "query": "MATCH (c:Cuisine)-[:HAS_DISH]->(:Dish)-[:USES]->(i:Ingredient)\nRETURN c.name AS Cuisine, COUNT(DISTINCT i) AS TotalUniqueIngredients\nORDER BY TotalUniqueIngredients DESC;\n\n\n\n\n\n",
+          "width": 6,
+          "height": 4,
+          "x": 7,
+          "y": 8,
+          "type": "table",
+          "selection": {},
+          "settings": {}
+        },
+        {
+          "id": "a22a841b-e6d8-4a9e-abeb-e99d5ff5b08a",
+          "title": "Top 10 Most Common Brands Across Recipes ",
+          "query": "MATCH (i:Ingredient)-[:ASSOCIATED_WITH]->(b:Brand)\nRETURN b.name AS Brand,\n       COUNT(DISTINCT i) AS TotalIngredients\nORDER BY TotalIngredients DESC\nLIMIT 10\n\n\n\n",
+          "width": 7,
+          "height": 4,
+          "x": 7,
+          "y": 4,
+          "type": "pie",
+          "selection": {
+            "index": "Brand",
+            "value": "TotalIngredients",
+            "key": "(none)"
+          },
+          "settings": {
+            "arcLabelsFontSize": 10
+          },
+          "schema": []
+        },
+        {
+          "id": "9fe7ca70-d927-42d8-b440-872eb322ea66",
+          "title": "",
+          "query": "MATCH (n:`Cuisine`) \nWHERE toLower(toString(n.`name`)) CONTAINS toLower($input) \nRETURN DISTINCT n.`name` as value,  n.`name` as display ORDER BY size(toString(value)) ASC LIMIT 5",
+          "width": 7,
+          "height": 2,
+          "x": 13,
+          "y": 12,
+          "type": "select",
+          "selection": {},
+          "settings": {
+            "type": "Node Property",
+            "entityType": "Cuisine",
+            "propertyType": "name",
+            "propertyTypeDisplay": "name",
+            "parameterName": "neodash_cuisine_name"
+          },
+          "schema": []
+        },
+        {
+          "id": "9ebb88f9-d6a1-4cae-aa59-30efb54d7dd6",
+          "title": "Top Ingredients in Selected Cuisine",
+          "query": "MATCH (c:Cuisine)\nWHERE toLower(c.name) = toLower($neodash_cuisine_name)\nMATCH (c)-[:HAS_DISH]->(:Dish)-[:USES]->(i:Ingredient)\nRETURN i.name AS Ingredient, COUNT(*) AS Frequency\nORDER BY Frequency DESC\nLIMIT 10;\n\n\n\n\n",
+          "width": 6,
+          "height": 4,
+          "x": 7,
+          "y": 12,
+          "type": "bar",
+          "selection": {
+            "index": "Ingredient",
+            "value": "Frequency",
+            "key": "(none)"
+          },
+          "settings": {},
+          "schema": []
+        },
+        {
+          "id": "4f0f158a-deef-4df9-ac1f-dd5ff22dfb4d",
+          "title": "🍽️ Cuisine Summary Dashboard",
+          "query": "MATCH (c:Cuisine)\nWHERE toLower(c.name) = toLower($neodash_cuisine_name)\nOPTIONAL MATCH (c)-[:HAS_DISH]->(d:Dish)\nOPTIONAL MATCH (c)-[:USES]->(i:Ingredient)\nOPTIONAL MATCH (i)-[:ASSOCIATED_WITH]->(b:Brand)\nRETURN \n  toUpper(c.name) AS Cuisine,\n  \"🍽️ \" + toString(COUNT(DISTINCT d)) AS Total_Dishes,\n  \"🥦 \" + toString(COUNT(DISTINCT i)) AS Total_Ingredients,\n  \"🏷️ \" + toString(COUNT(DISTINCT b)) AS Total_Brands\n\n",
+          "width": 7,
+          "height": 2,
+          "x": 13,
+          "y": 14,
+          "type": "table",
+          "selection": {},
+          "settings": {},
+          "schema": []
+        },
+        {
+          "id": "e56d43fe-5f38-4d7f-a5a7-b3d25042014f",
+          "title": "🌍 Global Dataset Summary",
+          "query": "CALL apoc.meta.stats() YIELD labels, relTypesCount\nRETURN\n  \"🌍 \" + toString(labels.Cuisine) AS Total_Cuisines,\n  \"🍽️ \" + toString(labels.Dish) AS Total_Dishes,\n  \"🥦 \" + toString(labels.Ingredient) AS Total_Ingredients,\n  \"🏷️ \" + toString(labels.Brand) AS Total_Brands\n\n\n\n",
+          "width": 20,
+          "height": 2,
+          "x": 0,
+          "y": 2,
+          "type": "table",
+          "selection": {},
+          "settings": {},
+          "schema": []
+        },
+        {
+          "id": "21f48ea7-77c2-418a-bd63-44932dae14c7",
+          "title": "Number of Dishes per Cuisine",
+          "query": "MATCH (c:Cuisine)-[:HAS_DISH]->(d:Dish)\nRETURN c.name AS Cuisine, COUNT(DISTINCT d) AS TotalDishes\nORDER BY TotalDishes DESC\nLIMIT 10\n\n\n",
+          "width": 6,
+          "height": 4,
+          "x": 14,
+          "y": 4,
+          "type": "bar",
+          "selection": {
+            "index": "Cuisine",
+            "value": "TotalDishes",
+            "key": "(none)"
+          },
+          "settings": {},
+          "schema": []
+        },
+        {
+          "id": "d57177a0-d2cd-4136-a4dd-4979499be582",
+          "title": "",
+          "query": "###### 🍲Diversity of ingredients in the data is similar to walking around Newton Food Centre, where each stall creates something distinctively tasty with the same basic ingredients.✨🌟\n\n ",
+          "width": 7,
+          "height": 2,
+          "x": 13,
+          "y": 10,
+          "type": "text",
+          "selection": {},
+          "settings": {},
+          "schema": []
+        },
+        {
+          "id": "19383674-9600-4d3a-88fd-091578a7d32a",
+          "title": "",
+          "query": "###### 🥇🍜 The graph's top brand Knorr 🥫 have sponsored several Singapore cooking competitions such as the Knorr Singapore Cookout and Knorr Cookout Roadshow 🌍👩‍🍳🔥\n\n ",
+          "width": 7,
+          "height": 2,
+          "x": 13,
+          "y": 8,
+          "type": "text",
+          "selection": {},
+          "settings": {},
+          "schema": []
+        }
+      ]
+    }
+  ],
+  "parameters": {},
+  "extensions": {
+    "active": true,
+    "activeReducers": [
+      "DASHBOARD/EXTENSIONS/QUERY_TRANSLATOR/"
+    ],
+    "advanced-charts": {
+      "active": true
+    },
+    "styling": {
+      "active": true
+    },
+    "actions": {
+      "active": true
+    },
+    "query-translator": {
+      "active": true,
+      "lastMessages": {
+        "0": {
+          "d57177a0-d2cd-4136-a4dd-4979499be582": "The data's \"ingredient diversity\" is similar to a trip through Newton Food Centre, in which each stall uses the same basic ingredients to create something distinctively different."
+        }
+      }
+    },
+    "forms": {
+      "active": true
+    }
+  },
+  "uuid": "84ffa94a-eaa2-4c2c-ae77-24e80aa2cf45"
+}
