@@ -10,20 +10,24 @@
     <link rel="manifest" href="manifest.json">
     <link rel="shortcut icon" href="favicon.ico">
     <title>NeoDash - Neo4j Dashboard Builder</title>
-</head>
 
-<!-- ⭐ ADD THIS BLOCK HERE ⭐ -->
-<script>
-  window.neoDashInitialDashboard = "/dashboard.json";
-</script>
-<!-- ⭐ END BLOCK ⭐ -->
+    <!-- ⭐ LOAD YOUR DASHBOARD AUTOMATICALLY ⭐ -->
+    <script>
+      // This tells NeoDash to open /dashboard.json immediately.
+      window.neoDashInitialDashboard = "/dashboard.json";
+    </script>
+</head>
 
 <body>
     <div id="overlay"></div>
     <div id="root"></div>
+
     <noscript>Please enable JavaScript to view this site.</noscript>
+
+    <!-- NeoDash app bundle -->
     <script src="bundle.js"></script>
 </body>
 
 </html>
+
 
