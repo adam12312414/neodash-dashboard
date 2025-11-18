@@ -1,20 +1,27 @@
 {
   "ssoEnabled": false,
-  "ssoProviders": [],
-  "ssoDiscoveryUrl": "https://example.com",
-  "standalone": false,
+  "standalone": true,
+
   "standaloneProtocol": "neo4j+s",
-  "standaloneHost": "localhost",
+  "standaloneHost": "985a5cea.databases.neo4j.io",
   "standalonePort": "7687",
   "standaloneDatabase": "neo4j",
-  "standaloneDashboardName": "My Dashboard",
+
+  "standaloneDashboardName": "MapOfFlavors",
   "standaloneDashboardDatabase": "dashboards",
-  "standaloneDashboardURL": "",
+
   "standaloneAllowLoad": false,
-  "standaloneLoadFromOtherDatabases": false,
   "standaloneMultiDatabase": false,
-  "standaloneDatabaseList": "neo4j",
+
+  "standaloneDashboardURL": "/dashboard.json",
+
   "loggingMode": "0",
   "loggingDatabase": "logs",
-  "customHeader": ""
+  "customHeader": "",
+
+  "standaloneAuth": {
+    "username": "neo4j",
+    "password": "hx16lNc8kwMK5KEUYraRvCTpmmA8g9rKl6toAatnNgw"
+  }
 }
+
